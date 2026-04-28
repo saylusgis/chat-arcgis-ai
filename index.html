@@ -3,89 +3,201 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Saylus Global AI Assistant</title>
+<title>AI Saylus Assistant</title>
 
 <style>
-body{
+*{
     margin:0;
-    font-family:Arial;
-    background:#f5f5f5;
+    padding:0;
+    box-sizing:border-box;
+    font-family: Arial, sans-serif;
 }
 
-.chat-container{
-    width:100%;
+body{
+    width:325px;
+    height:100vh;
+    overflow:hidden;
+    background:transparent;
+}
+
+/* PANEL PRINCIPAL */
+.chat-panel{
+    width:325px;
     height:100vh;
     display:flex;
     flex-direction:column;
+    background:rgba(255,255,255,0.95);
+    border-left:3px solid #00ff66;
+    box-shadow:-8px 0px 25px rgba(0,0,0,0.35);
+    border-radius:20px 0px 0px 20px;
+    overflow:hidden;
 }
 
-.chat-box{
-    flex:1;
-    overflow-y:auto;
-    padding:15px;
-    background:white;
-}
-
-.message-user{
-    background:#0079c1;
+/* HEADER */
+.chat-header{
+    height:110px;
+    background:linear-gradient(
+        135deg,
+        #021b0f,
+        #0b2e13,
+        #14532d
+    );
     color:white;
-    padding:10px;
-    border-radius:10px;
-    margin:10px 0;
-    width:fit-content;
-    max-width:80%;
+    display:flex;
+    align-items:center;
+    padding:15px;
+    position:relative;
+}
+
+.chat-header::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+        radial-gradient(circle at top right,
+        rgba(57,255,20,0.3),
+        transparent 40%);
+}
+
+.bot-logo{
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    background:#0a0a0a;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    border:2px solid #39ff14;
+    margin-right:10px;
+    z-index:2;
+}
+
+.bot-logo img{
+    width:45px;
+}
+
+.header-text{
+    z-index:2;
+}
+
+.header-text h2{
+    font-size:20px;
+    color:#39ff14;
+}
+
+.header-text p{
+    font-size:12px;
+    color:white;
+}
+
+/* CHAT BODY */
+.chat-body{
+    flex:1;
+    padding:20px;
+    overflow-y:auto;
+    background:
+        linear-gradient(
+            rgba(255,255,255,0.95),
+            rgba(245,255,245,0.95)
+        );
+}
+
+/* textura suave */
+.chat-body::before{
+    content:"";
+    position:absolute;
+    width:100%;
+    height:100%;
+    background-image:
+        radial-gradient(
+            rgba(0,150,0,0.05) 1px,
+            transparent 1px
+        );
+    background-size:20px 20px;
+    pointer-events:none;
+}
+
+/* mensajes */
+.message{
+    margin-bottom:15px;
+    padding:12px;
+    border-radius:12px;
+    max-width:90%;
+}
+
+.user{
+    background:#0b5e20;
+    color:white;
     margin-left:auto;
 }
 
-.message-ai{
-    background:#e9ecef;
-    color:black;
-    padding:10px;
-    border-radius:10px;
-    margin:10px 0;
-    width:fit-content;
-    max-width:80%;
+.bot{
+    background:#edf7ed;
+    color:#0b2e13;
 }
 
-.input-container{
+/* INPUT */
+.chat-input{
+    height:80px;
     display:flex;
-    padding:10px;
+    padding:15px;
     background:white;
     border-top:1px solid #ddd;
 }
 
-input{
+.chat-input input{
     flex:1;
-    padding:10px;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:30px;
+    outline:none;
 }
 
-button{
-    background:#0079c1;
-    color:white;
+.chat-input button{
+    margin-left:10px;
+    width:50px;
     border:none;
-    padding:10px 20px;
+    border-radius:50%;
+    background:#39ff14;
+    color:#0b2e13;
+    font-size:18px;
     cursor:pointer;
+    font-weight:bold;
 }
 
-button:hover{
-    background:#005f96;
+.chat-input button:hover{
+    background:#28cc0f;
 }
 </style>
 </head>
 <body>
 
-<div class="chat-container">
+<div class="chat-panel">
 
-    <div class="chat-box" id="chatBox"></div>
+    <div class="chat-header">
+        <div class="bot-logo">
+            🤖
+        </div>
 
-    <div class="input-container">
+        <div class="header-text">
+            <h2>AI Assistant</h2>
+            <p>Saylus Group</p>
+        </div>
+    </div>
+
+    <div class="chat-body" id="chatBox">
+        <div class="message bot">
+            Hello, how can I help you with fuel management today?
+        </div>
+    </div>
+
+    <div class="chat-input">
         <input 
             type="text" 
-            id="mensaje" 
-            placeholder="Ask about fuel consumption, vehicles, reports..."
+            id="messageInput"
+            placeholder="Ask about vehicles..."
         >
-        
-        <button onclick="sendMessage()">Send</button>
+        <button onclick="sendMessage()">➤</button>
     </div>
 
 </div>
@@ -93,18 +205,20 @@ button:hover{
 <script>
 async function sendMessage(){
 
-    const input = document.getElementById("mensaje");
-    const message = input.value;
+    const input = document.getElementById("messageInput");
+    const message = input.value.trim();
 
     if(!message) return;
 
     const chatBox = document.getElementById("chatBox");
 
     chatBox.innerHTML += `
-        <div class="message-user">${message}</div>
+        <div class="message user">${message}</div>
     `;
 
     input.value="";
+
+    chatBox.scrollTop = chatBox.scrollHeight;
 
     try{
         const response = await fetch(
@@ -115,7 +229,7 @@ async function sendMessage(){
                     "Content-Type":"application/json"
                 },
                 body: JSON.stringify({
-                    question: message
+                    pregunta: message
                 })
             }
         );
@@ -123,7 +237,9 @@ async function sendMessage(){
         const data = await response.json();
 
         chatBox.innerHTML += `
-            <div class="message-ai">${data.response}</div>
+            <div class="message bot">
+                ${data.respuesta}
+            </div>
         `;
 
         chatBox.scrollTop = chatBox.scrollHeight;
@@ -131,8 +247,8 @@ async function sendMessage(){
     } catch(error){
 
         chatBox.innerHTML += `
-            <div class="message-ai">
-                Error connecting to AI assistant
+            <div class="message bot">
+                Connection error with AI service
             </div>
         `;
     }
