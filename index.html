@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=350, initial-scale=1.0">
 <title>AI Assistant - Saylus Group</title>
 
 <style>
@@ -14,21 +14,22 @@
 }
 
 /* =========================
-   EXPERIENCE BUILDER FIX
+   FIX WIDTH EXPERIENCE BUILDER
 ========================= */
 html{
-    width:100%;
+    width:350px;
     height:100%;
     overflow:hidden;
 }
 
 body{
-    width:100%;
+    width:350px;
     height:100%;
+    overflow:hidden;
     background:#f4f7f5;
     display:flex;
     flex-direction:column;
-    overflow:hidden;
+    margin:0 auto;
 }
 
 /* =========================
@@ -46,8 +47,8 @@ body{
 }
 
 .logo{
-    width:85px;
-    height:85px;
+    width:80px;
+    height:80px;
     border-radius:50%;
     background:white;
     border:3px solid #39ff14;
@@ -70,17 +71,17 @@ body{
 }
 
 .header-text h2{
-    font-size:14px;
+    font-size:13px;
     font-weight:normal;
 }
 
 /* =========================
-   CHAT CONTAINER
+   CHAT AREA
 ========================= */
 .chat-container{
     flex:1;
     overflow-y:auto;
-    padding:20px;
+    padding:18px;
     display:flex;
     flex-direction:column;
     gap:15px;
@@ -99,14 +100,15 @@ body{
     padding:14px;
     border-radius:18px;
     line-height:1.5;
-    white-space:pre-line;
+    font-size:14px;
     word-wrap:break-word;
+    white-space:pre-line;
 }
 
 .bot-message{
     background:#dfe8df;
-    align-self:flex-start;
     color:#002b15;
+    align-self:flex-start;
 }
 
 .user-message{
@@ -154,7 +156,7 @@ body{
 }
 
 /* =========================
-   INPUT AREA
+   INPUT
 ========================= */
 .input-container{
     display:flex;
@@ -167,7 +169,7 @@ body{
 
 .input-container input{
     flex:1;
-    padding:15px;
+    padding:14px;
     border-radius:25px;
     border:1px solid #ccc;
     outline:none;
@@ -175,8 +177,8 @@ body{
 }
 
 .input-container button{
-    width:55px;
-    height:55px;
+    width:52px;
+    height:52px;
     border:none;
     border-radius:50%;
     background:#39ff14;
@@ -191,8 +193,18 @@ body{
 }
 
 .input-container button:disabled{
-    background:#a6dca0;
+    background:#9adf94;
     cursor:not-allowed;
+}
+
+/* SCROLL */
+.chat-container::-webkit-scrollbar{
+    width:6px;
+}
+
+.chat-container::-webkit-scrollbar-thumb{
+    background:#39ff14;
+    border-radius:10px;
 }
 </style>
 </head>
@@ -203,7 +215,7 @@ body{
     
     <div class="logo">
         <img 
-            src="https://raw.githubusercontent.com/saylusgis/chat-arcgis-ai/refs/heads/main/logo-ai.png" 
+            src="https://raw.githubusercontent.com/saylusgis/chat-arcgis-ai/refs/heads/main/logo-ai.png"
             alt="AI Logo"
         >
     </div>
@@ -212,6 +224,7 @@ body{
         <h1>AI Assistant</h1>
         <h2>SAYLUS GROUP</h2>
     </div>
+
 </div>
 
 <!-- CHAT -->
@@ -234,52 +247,60 @@ Ask me about:
 
 <!-- INPUT -->
 <div class="input-container">
+    
     <input 
-        type="text" 
+        type="text"
         id="userInput"
         placeholder="Ask about your fleet..."
         onkeypress="handleEnter(event)"
     >
 
     <button id="sendBtn" onclick="sendMessage()">➤</button>
+
 </div>
 
 <script>
-const WEBHOOK_URL = "https://saylusglobal.app.n8n.cloud/webhook/arcgis-fuelmanagement";
+const WEBHOOK_URL =
+"https://saylusglobal.app.n8n.cloud/webhook/arcgis-fuelmanagement";
+
 let isProcessing = false;
 
-/* =========================
-   ADD USER MESSAGE
-========================= */
+/* USER MESSAGE */
 function addUserMessage(message){
-    const chat = document.getElementById("chatContainer");
+    const chat =
+        document.getElementById("chatContainer");
 
-    const div = document.createElement("div");
-    div.className = "message user-message";
+    const div =
+        document.createElement("div");
+
+    div.className =
+        "message user-message";
+
     div.textContent = message;
 
     chat.appendChild(div);
     scrollToBottom();
 }
 
-/* =========================
-   ADD BOT MESSAGE
-========================= */
+/* BOT MESSAGE */
 function addBotMessage(message){
-    const chat = document.getElementById("chatContainer");
+    const chat =
+        document.getElementById("chatContainer");
 
-    const div = document.createElement("div");
-    div.className = "message bot-message";
+    const div =
+        document.createElement("div");
 
-    div.innerHTML = formatResponse(message);
+    div.className =
+        "message bot-message";
+
+    div.innerHTML =
+        formatResponse(message);
 
     chat.appendChild(div);
     scrollToBottom();
 }
 
-/* =========================
-   FORMAT RESPONSE
-========================= */
+/* FORMAT RESPONSE */
 function formatResponse(message){
 
     if(typeof message !== "string"){
@@ -289,14 +310,15 @@ function formatResponse(message){
     return message.replace(/\n/g,"<br>");
 }
 
-/* =========================
-   TYPING INDICATOR
-========================= */
+/* TYPING */
 function showTypingIndicator(){
 
-    const chat = document.getElementById("chatContainer");
+    const chat =
+        document.getElementById("chatContainer");
 
-    const typing = document.createElement("div");
+    const typing =
+        document.createElement("div");
+
     typing.className = "typing";
     typing.id = "typingIndicator";
 
@@ -311,16 +333,15 @@ function showTypingIndicator(){
 }
 
 function removeTypingIndicator(){
-    const typing = document.getElementById("typingIndicator");
+    const typing =
+        document.getElementById("typingIndicator");
 
     if(typing){
         typing.remove();
     }
 }
 
-/* =========================
-   GREETING DETECTION
-========================= */
+/* GREETING DETECTION */
 function isGreeting(message){
 
     const greetings = [
@@ -334,19 +355,19 @@ function isGreeting(message){
         "good afternoon"
     ];
 
-    const lower = message.toLowerCase().trim();
+    const lower =
+        message.toLowerCase().trim();
 
     return greetings.some(
         g => lower === g || lower.includes(g)
     );
 }
 
-/* =========================
-   GREETING RESPONSE
-========================= */
+/* GREETING RESPONSE */
 function greetingResponse(message){
 
-    const lower = message.toLowerCase();
+    const lower =
+        message.toLowerCase();
 
     if(
         lower.includes("hola") ||
@@ -360,7 +381,7 @@ Puedo ayudarte con:
 • Consumo de combustible  
 • Costos por vehículo  
 • Rendimiento operativo  
-• Incremento de precios  
+• Incrementos de precio  
 • Comparaciones históricas  
 • Análisis por fechas
 
@@ -384,32 +405,36 @@ How can I help you today?
     `;
 }
 
-/* =========================
-   SEND MESSAGE
-========================= */
+/* SEND MESSAGE */
 async function sendMessage(){
 
     if(isProcessing) return;
 
-    const input = document.getElementById("userInput");
-    const sendBtn = document.getElementById("sendBtn");
+    const input =
+        document.getElementById("userInput");
 
-    const message = input.value.trim();
+    const sendBtn =
+        document.getElementById("sendBtn");
+
+    const message =
+        input.value.trim();
 
     if(!message) return;
 
     addUserMessage(message);
     input.value = "";
 
-    /* SALUDO */
+    /* GREETING */
     if(isGreeting(message)){
         setTimeout(()=>{
-            addBotMessage(greetingResponse(message));
+            addBotMessage(
+                greetingResponse(message)
+            );
         },400);
         return;
     }
 
-    /* CONSULTA REAL */
+    /* REAL QUERY */
     isProcessing = true;
     sendBtn.disabled = true;
 
@@ -417,20 +442,23 @@ async function sendMessage(){
 
     try{
 
-        const response = await fetch(
-            WEBHOOK_URL,
-            {
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json"
-                },
-                body:JSON.stringify({
-                    question:message
-                })
-            }
-        );
+        const response =
+            await fetch(
+                WEBHOOK_URL,
+                {
+                    method:"POST",
+                    headers:{
+                        "Content-Type":
+                        "application/json"
+                    },
+                    body:JSON.stringify({
+                        question:message
+                    })
+                }
+            );
 
-        const data = await response.json();
+        const data =
+            await response.json();
 
         removeTypingIndicator();
 
@@ -440,7 +468,7 @@ async function sendMessage(){
             "No analytical response generated."
         );
 
-    }catch(error){
+    } catch(error){
 
         removeTypingIndicator();
 
@@ -457,21 +485,19 @@ Please try again.
     sendBtn.disabled = false;
 }
 
-/* =========================
-   ENTER KEY
-========================= */
+/* ENTER */
 function handleEnter(event){
     if(event.key === "Enter"){
         sendMessage();
     }
 }
 
-/* =========================
-   AUTOSCROLL
-========================= */
+/* AUTOSCROLL */
 function scrollToBottom(){
     const chat =
-        document.getElementById("chatContainer");
+        document.getElementById(
+            "chatContainer"
+        );
 
     chat.scrollTop =
         chat.scrollHeight;
