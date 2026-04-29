@@ -10,37 +10,51 @@
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:Arial,sans-serif;
+    font-family: Arial, sans-serif;
+}
+
+/* =========================
+   EXPERIENCE BUILDER FIX
+========================= */
+html{
+    width:100%;
+    height:100%;
+    overflow:hidden;
 }
 
 body{
-    background:#f5f7f6;
-    height:100vh;
+    width:100%;
+    height:100%;
+    background:#f4f7f5;
     display:flex;
     flex-direction:column;
+    overflow:hidden;
 }
 
-/* HEADER */
+/* =========================
+   HEADER
+========================= */
 .header{
-    background:linear-gradient(90deg,#001f0f,#003d1f,#005c2d);
+    background:linear-gradient(90deg,#001b0d,#003d1f,#005d2f);
     color:white;
     padding:15px;
     display:flex;
     align-items:center;
     gap:15px;
     border-bottom:2px solid #39ff14;
+    flex-shrink:0;
 }
 
 .logo{
-    width:80px;
-    height:80px;
+    width:85px;
+    height:85px;
     border-radius:50%;
     background:white;
+    border:3px solid #39ff14;
     overflow:hidden;
     display:flex;
     justify-content:center;
     align-items:center;
-    border:3px solid #39ff14;
 }
 
 .logo img{
@@ -51,7 +65,8 @@ body{
 
 .header-text h1{
     color:#39ff14;
-    font-size:22px;
+    font-size:20px;
+    font-weight:bold;
 }
 
 .header-text h2{
@@ -59,27 +74,39 @@ body{
     font-weight:normal;
 }
 
-/* CHAT AREA */
+/* =========================
+   CHAT CONTAINER
+========================= */
 .chat-container{
     flex:1;
-    padding:20px;
     overflow-y:auto;
+    padding:20px;
     display:flex;
     flex-direction:column;
     gap:15px;
+    background:
+        linear-gradient(
+            rgba(255,255,255,0.98),
+            rgba(244,247,245,0.98)
+        );
 }
 
+/* =========================
+   MESSAGES
+========================= */
 .message{
-    max-width:80%;
+    max-width:85%;
     padding:14px;
     border-radius:18px;
     line-height:1.5;
     white-space:pre-line;
+    word-wrap:break-word;
 }
 
 .bot-message{
-    background:#dce6dc;
+    background:#dfe8df;
     align-self:flex-start;
+    color:#002b15;
 }
 
 .user-message{
@@ -88,10 +115,12 @@ body{
     align-self:flex-end;
 }
 
-/* Typing animation */
+/* =========================
+   TYPING ANIMATION
+========================= */
 .typing{
-    background:#dce6dc;
-    width:120px;
+    background:#dfe8df;
+    width:90px;
     padding:14px;
     border-radius:18px;
     display:flex;
@@ -102,9 +131,9 @@ body{
 .typing span{
     width:10px;
     height:10px;
-    background:#00aa44;
+    background:#008f3d;
     border-radius:50%;
-    animation: bounce 1s infinite;
+    animation:bounce 1s infinite;
 }
 
 .typing span:nth-child(2){
@@ -124,13 +153,16 @@ body{
     }
 }
 
-/* INPUT AREA */
+/* =========================
+   INPUT AREA
+========================= */
 .input-container{
     display:flex;
+    gap:10px;
     padding:15px;
     background:white;
     border-top:1px solid #ddd;
-    gap:10px;
+    flex-shrink:0;
 }
 
 .input-container input{
@@ -138,38 +170,29 @@ body{
     padding:15px;
     border-radius:25px;
     border:1px solid #ccc;
-    font-size:16px;
+    outline:none;
+    font-size:14px;
 }
 
 .input-container button{
-    width:60px;
-    height:60px;
+    width:55px;
+    height:55px;
     border:none;
     border-radius:50%;
     background:#39ff14;
     cursor:pointer;
     font-size:20px;
     font-weight:bold;
+    transition:0.3s;
 }
 
-/* tables */
-.response-table{
-    width:100%;
-    border-collapse:collapse;
-    margin-top:10px;
-    font-size:14px;
+.input-container button:hover{
+    background:#2ce010;
 }
 
-.response-table th,
-.response-table td{
-    border:1px solid #ccc;
-    padding:8px;
-    text-align:left;
-}
-
-.response-table th{
-    background:#003d1f;
-    color:white;
+.input-container button:disabled{
+    background:#a6dca0;
+    cursor:not-allowed;
 }
 </style>
 </head>
@@ -177,9 +200,12 @@ body{
 
 <!-- HEADER -->
 <div class="header">
+    
     <div class="logo">
-        <!-- REEMPLAZAR CON TU URL REAL -->
-        <img src="https://TU-USUARIO.github.io/TU-REPO/logo-ai.png" alt="AI Logo">
+        <img 
+            src="https://raw.githubusercontent.com/saylusgis/chat-arcgis-ai/refs/heads/main/logo-ai.png" 
+            alt="AI Logo"
+        >
     </div>
 
     <div class="header-text">
@@ -200,7 +226,8 @@ Ask me about:
 • Vehicle costs  
 • Fleet performance  
 • Fuel pricing  
-• Operational analytics
+• Historical comparisons  
+• Date analysis
     </div>
 
 </div>
@@ -209,21 +236,21 @@ Ask me about:
 <div class="input-container">
     <input 
         type="text" 
-        id="userInput" 
+        id="userInput"
         placeholder="Ask about your fleet..."
         onkeypress="handleEnter(event)"
     >
-    <button onclick="sendMessage()" id="sendBtn">➤</button>
+
+    <button id="sendBtn" onclick="sendMessage()">➤</button>
 </div>
 
 <script>
-const WEBHOOK_URL = "TU_WEBHOOK_N8N";
-
+const WEBHOOK_URL = "https://saylusglobal.app.n8n.cloud/webhook/arcgis-fuelmanagement";
 let isProcessing = false;
 
-//------------------------------------------
-// ADD USER MESSAGE
-//------------------------------------------
+/* =========================
+   ADD USER MESSAGE
+========================= */
 function addUserMessage(message){
     const chat = document.getElementById("chatContainer");
 
@@ -235,9 +262,9 @@ function addUserMessage(message){
     scrollToBottom();
 }
 
-//------------------------------------------
-// ADD BOT MESSAGE
-//------------------------------------------
+/* =========================
+   ADD BOT MESSAGE
+========================= */
 function addBotMessage(message){
     const chat = document.getElementById("chatContainer");
 
@@ -250,24 +277,23 @@ function addBotMessage(message){
     scrollToBottom();
 }
 
-//------------------------------------------
-// FORMAT RESPONSE
-//------------------------------------------
+/* =========================
+   FORMAT RESPONSE
+========================= */
 function formatResponse(message){
 
     if(typeof message !== "string"){
         return JSON.stringify(message,null,2);
     }
 
-    return message
-        .replace(/\n/g,"<br>")
-        .replace(/\|/g,"");
+    return message.replace(/\n/g,"<br>");
 }
 
-//------------------------------------------
-// TYPING INDICATOR
-//------------------------------------------
+/* =========================
+   TYPING INDICATOR
+========================= */
 function showTypingIndicator(){
+
     const chat = document.getElementById("chatContainer");
 
     const typing = document.createElement("div");
@@ -292,31 +318,32 @@ function removeTypingIndicator(){
     }
 }
 
-//------------------------------------------
-// GREETING DETECTION
-//------------------------------------------
+/* =========================
+   GREETING DETECTION
+========================= */
 function isGreeting(message){
 
     const greetings = [
+        "hola",
         "hello",
         "hi",
         "hey",
-        "hola",
         "buenas",
         "buenos dias",
-        "buen día",
         "good morning",
         "good afternoon"
     ];
 
     const lower = message.toLowerCase().trim();
 
-    return greetings.some(g => lower === g || lower.includes(g));
+    return greetings.some(
+        g => lower === g || lower.includes(g)
+    );
 }
 
-//------------------------------------------
-// LOCAL GREETING RESPONSE
-//------------------------------------------
+/* =========================
+   GREETING RESPONSE
+========================= */
 function greetingResponse(message){
 
     const lower = message.toLowerCase();
@@ -326,7 +353,7 @@ function greetingResponse(message){
         lower.includes("buenas")
     ){
         return `
-👋 Hola, soy <b>AI Assistant Saylus Group</b>.
+👋 Hola, soy AI Assistant Saylus Group.
 
 Puedo ayudarte con:
 
@@ -334,7 +361,7 @@ Puedo ayudarte con:
 • Costos por vehículo  
 • Rendimiento operativo  
 • Incremento de precios  
-• Comparativos históricos  
+• Comparaciones históricas  
 • Análisis por fechas
 
 ¿En qué puedo ayudarte?
@@ -342,13 +369,13 @@ Puedo ayudarte con:
     }
 
     return `
-👋 Hello, I'm <b>AI Assistant Saylus Group</b>.
+👋 Hello, I'm AI Assistant Saylus Group.
 
 I can help you with:
 
 • Fuel consumption  
 • Vehicle costs  
-• Operational performance  
+• Fleet performance  
 • Fuel pricing  
 • Historical comparisons  
 • Date analysis
@@ -357,9 +384,9 @@ How can I help you today?
     `;
 }
 
-//------------------------------------------
-// SEND MESSAGE
-//------------------------------------------
+/* =========================
+   SEND MESSAGE
+========================= */
 async function sendMessage(){
 
     if(isProcessing) return;
@@ -372,23 +399,17 @@ async function sendMessage(){
     if(!message) return;
 
     addUserMessage(message);
-
     input.value = "";
 
-    //-----------------------------------
-    // GREETING
-    //-----------------------------------
+    /* SALUDO */
     if(isGreeting(message)){
         setTimeout(()=>{
             addBotMessage(greetingResponse(message));
         },400);
-
         return;
     }
 
-    //-----------------------------------
-    // REAL ANALYSIS
-    //-----------------------------------
+    /* CONSULTA REAL */
     isProcessing = true;
     sendBtn.disabled = true;
 
@@ -396,15 +417,18 @@ async function sendMessage(){
 
     try{
 
-        const response = await fetch(WEBHOOK_URL,{
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body:JSON.stringify({
-                question:message
-            })
-        });
+        const response = await fetch(
+            WEBHOOK_URL,
+            {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({
+                    question:message
+                })
+            }
+        );
 
         const data = await response.json();
 
@@ -421,9 +445,9 @@ async function sendMessage(){
         removeTypingIndicator();
 
         addBotMessage(`
-❌ Connection error with AI engine.
+❌ Error connecting with AI service.
 
-Please try again in a few seconds.
+Please try again.
         `);
 
         console.error(error);
@@ -433,21 +457,24 @@ Please try again in a few seconds.
     sendBtn.disabled = false;
 }
 
-//------------------------------------------
-// ENTER KEY
-//------------------------------------------
+/* =========================
+   ENTER KEY
+========================= */
 function handleEnter(event){
     if(event.key === "Enter"){
         sendMessage();
     }
 }
 
-//------------------------------------------
-// AUTOSCROLL
-//------------------------------------------
+/* =========================
+   AUTOSCROLL
+========================= */
 function scrollToBottom(){
-    const chat = document.getElementById("chatContainer");
-    chat.scrollTop = chat.scrollHeight;
+    const chat =
+        document.getElementById("chatContainer");
+
+    chat.scrollTop =
+        chat.scrollHeight;
 }
 </script>
 
