@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=350, initial-scale=1.0">
-<title>AI Saylus Assistant</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Assistant - Saylus Group</title>
 
 <style>
 *{
@@ -13,244 +13,185 @@
     font-family:Arial,sans-serif;
 }
 
-html,body{
-    width:350px;
-    height:100vh;
-    overflow:hidden;
-    background:transparent;
-}
-
-/* PANEL */
-.chat-panel{
-    width:350px;
+body{
+    background:#f5f7f6;
     height:100vh;
     display:flex;
     flex-direction:column;
-    background:rgba(255,255,255,0.98);
-    border-left:3px solid #39ff14;
-    border-radius:18px 0px 0px 18px;
-    overflow:hidden;
-    box-shadow:-8px 0px 25px rgba(0,0,0,0.35);
 }
 
 /* HEADER */
-.chat-header{
-    height:105px;
-    background:linear-gradient(
-        135deg,
-        #021b0f 0%,
-        #0b2e13 50%,
-        #14532d 100%
-    );
+.header{
+    background:linear-gradient(90deg,#001f0f,#003d1f,#005c2d);
+    color:white;
+    padding:15px;
     display:flex;
     align-items:center;
-    padding:15px;
+    gap:15px;
     border-bottom:2px solid #39ff14;
-    position:relative;
 }
 
-.chat-header::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    background:
-        radial-gradient(
-            circle at top right,
-            rgba(57,255,20,0.18),
-            transparent 40%
-        );
-}
-
-.bot-logo{
-    width:70px;
-    height:70px;
-    min-width:70px;
+.logo{
+    width:80px;
+    height:80px;
     border-radius:50%;
-    overflow:hidden;
-    border:2px solid #39ff14;
     background:white;
-    z-index:2;
+    overflow:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    border:3px solid #39ff14;
 }
 
-.bot-logo img{
+.logo img{
     width:100%;
     height:100%;
     object-fit:cover;
 }
 
-.header-text{
-    margin-left:12px;
-    z-index:2;
+.header-text h1{
+    color:#39ff14;
+    font-size:22px;
 }
 
 .header-text h2{
-    color:#39ff14;
-    font-size:22px;
-    font-weight:bold;
-}
-
-.header-text p{
-    color:white;
-    font-size:12px;
-    letter-spacing:1px;
-}
-
-/* CHAT BODY */
-.chat-body{
-    flex:1;
-    overflow-y:auto;
-    padding:18px;
-    background:
-        linear-gradient(
-            rgba(255,255,255,0.98),
-            rgba(247,255,247,0.98)
-        );
-    position:relative;
-}
-
-.chat-body::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    background-image:
-        radial-gradient(
-            rgba(0,150,0,0.03) 1px,
-            transparent 1px
-        );
-    background-size:24px 24px;
-    pointer-events:none;
-}
-
-/* MESSAGES */
-.message{
-    position:relative;
-    z-index:2;
-    margin-bottom:15px;
-    padding:12px;
-    border-radius:14px;
-    max-width:90%;
     font-size:14px;
+    font-weight:normal;
+}
+
+/* CHAT AREA */
+.chat-container{
+    flex:1;
+    padding:20px;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+.message{
+    max-width:80%;
+    padding:14px;
+    border-radius:18px;
     line-height:1.5;
     white-space:pre-line;
 }
 
-.user{
-    background:#0b5e20;
-    color:white;
-    margin-left:auto;
+.bot-message{
+    background:#dce6dc;
+    align-self:flex-start;
 }
 
-.bot{
-    background:#edf7ed;
-    color:#0b2e13;
-    border:1px solid rgba(0,100,0,0.08);
+.user-message{
+    background:#39ff14;
+    color:black;
+    align-self:flex-end;
 }
 
-/* LOADER */
-.loading-container{
-    display:none;
-    text-align:center;
-    padding:15px;
-    z-index:2;
-    position:relative;
+/* Typing animation */
+.typing{
+    background:#dce6dc;
+    width:120px;
+    padding:14px;
+    border-radius:18px;
+    display:flex;
+    gap:6px;
+    align-self:flex-start;
 }
 
-.loader-spinner{
-    width:35px;
-    height:35px;
-    margin:auto;
-    border:4px solid rgba(0,0,0,0.1);
-    border-top:4px solid #39ff14;
+.typing span{
+    width:10px;
+    height:10px;
+    background:#00aa44;
     border-radius:50%;
-    animation:spin 1s linear infinite;
+    animation: bounce 1s infinite;
 }
 
-.loading-text{
-    margin-top:10px;
-    font-size:13px;
-    color:#14532d;
-    font-weight:bold;
+.typing span:nth-child(2){
+    animation-delay:0.2s;
 }
 
-@keyframes spin{
-    100%{
-        transform:rotate(360deg);
+.typing span:nth-child(3){
+    animation-delay:0.4s;
+}
+
+@keyframes bounce{
+    0%,80%,100%{
+        transform:translateY(0);
+    }
+    40%{
+        transform:translateY(-8px);
     }
 }
 
-/* INPUT */
-.chat-input{
-    height:80px;
+/* INPUT AREA */
+.input-container{
     display:flex;
-    align-items:center;
     padding:15px;
     background:white;
-    border-top:1px solid #e5e5e5;
+    border-top:1px solid #ddd;
+    gap:10px;
 }
 
-.chat-input input{
+.input-container input{
     flex:1;
-    padding:12px;
-    border:1px solid #d9d9d9;
-    border-radius:30px;
-    outline:none;
-    font-size:14px;
+    padding:15px;
+    border-radius:25px;
+    border:1px solid #ccc;
+    font-size:16px;
 }
 
-.chat-input button{
-    width:48px;
-    height:48px;
-    margin-left:10px;
+.input-container button{
+    width:60px;
+    height:60px;
     border:none;
     border-radius:50%;
     background:#39ff14;
-    color:#0b2e13;
-    font-size:18px;
     cursor:pointer;
+    font-size:20px;
     font-weight:bold;
-    transition:0.3s;
 }
 
-.chat-input button:hover{
-    background:#25cc0f;
+/* tables */
+.response-table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+    font-size:14px;
 }
 
-.chat-input button:disabled{
-    background:#a5a5a5;
-    cursor:not-allowed;
+.response-table th,
+.response-table td{
+    border:1px solid #ccc;
+    padding:8px;
+    text-align:left;
 }
 
-/* SCROLL */
-.chat-body::-webkit-scrollbar{
-    width:6px;
-}
-
-.chat-body::-webkit-scrollbar-thumb{
-    background:#39ff14;
-    border-radius:10px;
+.response-table th{
+    background:#003d1f;
+    color:white;
 }
 </style>
 </head>
 <body>
 
-<div class="chat-panel">
-
-    <!-- HEADER -->
-    <div class="chat-header">
-        <div class="bot-logo">
-            <img src="logo-ai.png" alt="AI Logo">
-        </div>
-
-        <div class="header-text">
-            <h2>AI Assistant</h2>
-            <p>SAYLUS GROUP</p>
-        </div>
+<!-- HEADER -->
+<div class="header">
+    <div class="logo">
+        <!-- REEMPLAZAR CON TU URL REAL -->
+        <img src="https://TU-USUARIO.github.io/TU-REPO/logo-ai.png" alt="AI Logo">
     </div>
 
-    <!-- CHAT -->
-    <div class="chat-body" id="chatBox">
+    <div class="header-text">
+        <h1>AI Assistant</h1>
+        <h2>SAYLUS GROUP</h2>
+    </div>
+</div>
 
-        <div class="message bot">
+<!-- CHAT -->
+<div class="chat-container" id="chatContainer">
+
+    <div class="message bot-message">
 Hello, I'm your fuel intelligence assistant.
 
 Ask me about:
@@ -260,249 +201,254 @@ Ask me about:
 • Fleet performance  
 • Fuel pricing  
 • Operational analytics
-        </div>
-
-        <!-- LOADER -->
-        <div class="loading-container" id="loadingContainer">
-            <div class="loader-spinner"></div>
-            <div class="loading-text" id="loadingText">
-                Processing...
-            </div>
-        </div>
-
-    </div>
-
-    <!-- INPUT -->
-    <div class="chat-input">
-        <input
-            type="text"
-            id="messageInput"
-            placeholder="Ask about your fleet..."
-        >
-
-        <button id="sendBtn" onclick="sendMessage()">➤</button>
     </div>
 
 </div>
 
+<!-- INPUT -->
+<div class="input-container">
+    <input 
+        type="text" 
+        id="userInput" 
+        placeholder="Ask about your fleet..."
+        onkeypress="handleEnter(event)"
+    >
+    <button onclick="sendMessage()" id="sendBtn">➤</button>
+</div>
+
 <script>
-const webhookURL =
-"https://saylusglobal.app.n8n.cloud/webhook/arcgis-fuelmanagement";
+const WEBHOOK_URL = "TU_WEBHOOK_N8N";
 
-const loadingMessages = [
-    "Analyzing fuel records...",
-    "Calculating fleet metrics...",
-    "Comparing vehicles...",
-    "Generating AI response..."
-];
+let isProcessing = false;
 
-let loadingInterval = null;
-let loadingIndex = 0;
+//------------------------------------------
+// ADD USER MESSAGE
+//------------------------------------------
+function addUserMessage(message){
+    const chat = document.getElementById("chatContainer");
 
+    const div = document.createElement("div");
+    div.className = "message user-message";
+    div.textContent = message;
 
-// Detect language
-function detectLanguage(text){
-    const spanishWords = [
-        "cuál","cual","combustible",
-        "vehiculo","vehículo",
-        "litros","costo"
+    chat.appendChild(div);
+    scrollToBottom();
+}
+
+//------------------------------------------
+// ADD BOT MESSAGE
+//------------------------------------------
+function addBotMessage(message){
+    const chat = document.getElementById("chatContainer");
+
+    const div = document.createElement("div");
+    div.className = "message bot-message";
+
+    div.innerHTML = formatResponse(message);
+
+    chat.appendChild(div);
+    scrollToBottom();
+}
+
+//------------------------------------------
+// FORMAT RESPONSE
+//------------------------------------------
+function formatResponse(message){
+
+    if(typeof message !== "string"){
+        return JSON.stringify(message,null,2);
+    }
+
+    return message
+        .replace(/\n/g,"<br>")
+        .replace(/\|/g,"");
+}
+
+//------------------------------------------
+// TYPING INDICATOR
+//------------------------------------------
+function showTypingIndicator(){
+    const chat = document.getElementById("chatContainer");
+
+    const typing = document.createElement("div");
+    typing.className = "typing";
+    typing.id = "typingIndicator";
+
+    typing.innerHTML = `
+        <span></span>
+        <span></span>
+        <span></span>
+    `;
+
+    chat.appendChild(typing);
+    scrollToBottom();
+}
+
+function removeTypingIndicator(){
+    const typing = document.getElementById("typingIndicator");
+
+    if(typing){
+        typing.remove();
+    }
+}
+
+//------------------------------------------
+// GREETING DETECTION
+//------------------------------------------
+function isGreeting(message){
+
+    const greetings = [
+        "hello",
+        "hi",
+        "hey",
+        "hola",
+        "buenas",
+        "buenos dias",
+        "buen día",
+        "good morning",
+        "good afternoon"
     ];
 
-    const lower = text.toLowerCase();
+    const lower = message.toLowerCase().trim();
 
-    return spanishWords.some(word => lower.includes(word))
-        ? "es"
-        : "en";
+    return greetings.some(g => lower === g || lower.includes(g));
 }
 
+//------------------------------------------
+// LOCAL GREETING RESPONSE
+//------------------------------------------
+function greetingResponse(message){
 
-// Add message
-function addMessage(text,type){
-    const chatBox =
-        document.getElementById("chatBox");
+    const lower = message.toLowerCase();
 
-    const div =
-        document.createElement("div");
+    if(
+        lower.includes("hola") ||
+        lower.includes("buenas")
+    ){
+        return `
+👋 Hola, soy <b>AI Assistant Saylus Group</b>.
 
-    div.className = `message ${type}`;
-    div.innerText = text;
+Puedo ayudarte con:
 
-    chatBox.appendChild(div);
+• Consumo de combustible  
+• Costos por vehículo  
+• Rendimiento operativo  
+• Incremento de precios  
+• Comparativos históricos  
+• Análisis por fechas
 
-    chatBox.scrollTop =
-        chatBox.scrollHeight;
-}
-
-
-// Show loader
-function showLoader(language){
-
-    const loader =
-        document.getElementById(
-            "loadingContainer"
-        );
-
-    const loadingText =
-        document.getElementById(
-            "loadingText"
-        );
-
-    const messages =
-        language === "es"
-        ? [
-            "Analizando registros...",
-            "Calculando métricas...",
-            "Comparando vehículos...",
-            "Generando respuesta..."
-          ]
-        : loadingMessages;
-
-    loader.style.display = "block";
-
-    loadingIndex = 0;
-    loadingText.innerText =
-        messages[0];
-
-    loadingInterval =
-        setInterval(() => {
-            loadingIndex =
-                (loadingIndex + 1) %
-                messages.length;
-
-            loadingText.innerText =
-                messages[loadingIndex];
-        },1500);
-}
-
-
-// Hide loader
-function hideLoader(){
-    const loader =
-        document.getElementById(
-            "loadingContainer"
-        );
-
-    loader.style.display="none";
-
-    clearInterval(
-        loadingInterval
-    );
-}
-
-
-// Format structured response
-function formatResponse(data){
-
-    let text = "";
-
-    if(data.response?.mainResponse){
-        text += data.response.mainResponse + "\n\n";
+¿En qué puedo ayudarte?
+        `;
     }
 
-    if(data.response?.comparison?.message){
-        text +=
-        "📊 " +
-        data.response.comparison.message +
-        "\n\n";
-    }
+    return `
+👋 Hello, I'm <b>AI Assistant Saylus Group</b>.
 
-    if(data.response?.justification?.message){
-        text +=
-        "📌 " +
-        data.response.justification.message;
-    }
+I can help you with:
 
-    return text || "No response available.";
+• Fuel consumption  
+• Vehicle costs  
+• Operational performance  
+• Fuel pricing  
+• Historical comparisons  
+• Date analysis
+
+How can I help you today?
+    `;
 }
 
-
-// Send message
+//------------------------------------------
+// SEND MESSAGE
+//------------------------------------------
 async function sendMessage(){
 
-    const input =
-        document.getElementById(
-            "messageInput"
-        );
+    if(isProcessing) return;
 
-    const button =
-        document.getElementById(
-            "sendBtn"
-        );
+    const input = document.getElementById("userInput");
+    const sendBtn = document.getElementById("sendBtn");
 
-    const message =
-        input.value.trim();
+    const message = input.value.trim();
 
     if(!message) return;
 
-    const language =
-        detectLanguage(message);
+    addUserMessage(message);
 
-    addMessage(message,"user");
+    input.value = "";
 
-    input.value="";
+    //-----------------------------------
+    // GREETING
+    //-----------------------------------
+    if(isGreeting(message)){
+        setTimeout(()=>{
+            addBotMessage(greetingResponse(message));
+        },400);
 
-    button.disabled = true;
+        return;
+    }
 
-    showLoader(language);
+    //-----------------------------------
+    // REAL ANALYSIS
+    //-----------------------------------
+    isProcessing = true;
+    sendBtn.disabled = true;
+
+    showTypingIndicator();
 
     try{
 
-        const response =
-            await fetch(
-                webhookURL,
-                {
-                    method:"POST",
-                    headers:{
-                        "Content-Type":
-                        "application/json"
-                    },
-                    body: JSON.stringify({
-                        question: message,
-                        language: language
-                    })
-                }
-            );
+        const response = await fetch(WEBHOOK_URL,{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                question:message
+            })
+        });
 
-        const data =
-            await response.json();
+        const data = await response.json();
 
-        hideLoader();
+        removeTypingIndicator();
 
-        const formattedText =
-            formatResponse(data);
-
-        addMessage(
-            formattedText,
-            "bot"
+        addBotMessage(
+            data.response ||
+            data.message ||
+            "No analytical response generated."
         );
 
-    } catch(error){
+    }catch(error){
 
-        hideLoader();
+        removeTypingIndicator();
 
-        addMessage(
-            language === "es"
-            ? "Error de conexión con el servicio AI."
-            : "Connection error with AI service.",
-            "bot"
-        );
+        addBotMessage(`
+❌ Connection error with AI engine.
+
+Please try again in a few seconds.
+        `);
+
+        console.error(error);
     }
 
-    button.disabled = false;
+    isProcessing = false;
+    sendBtn.disabled = false;
 }
 
-
-// Enter key
-document
-.getElementById("messageInput")
-.addEventListener(
-    "keypress",
-    function(e){
-        if(e.key === "Enter"){
-            sendMessage();
-        }
+//------------------------------------------
+// ENTER KEY
+//------------------------------------------
+function handleEnter(event){
+    if(event.key === "Enter"){
+        sendMessage();
     }
-);
+}
+
+//------------------------------------------
+// AUTOSCROLL
+//------------------------------------------
+function scrollToBottom(){
+    const chat = document.getElementById("chatContainer");
+    chat.scrollTop = chat.scrollHeight;
+}
 </script>
 
 </body>
