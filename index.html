@@ -13,49 +13,38 @@
     font-family: Arial, sans-serif;
 }
 
-/* =========================
-   EXPERIENCE BUILDER WIDTH
-========================= */
-html{
+/* FIXED WIDTH FOR EXPERIENCE BUILDER */
+html,body{
     width:350px;
     height:100%;
     overflow:hidden;
 }
 
 body{
-    width:350px;
-    height:100%;
-    overflow:hidden;
     background:#f4f7f5;
     display:flex;
     flex-direction:column;
-    margin:0 auto;
+    border:2px solid #0c662f;
 }
 
-/* =========================
-   HEADER
-========================= */
+/* HEADER */
 .header{
     background:linear-gradient(90deg,#001b0d,#003d1f,#005d2f);
     color:white;
-    padding:14px;
+    padding:12px;
     display:flex;
     align-items:center;
     gap:12px;
     border-bottom:2px solid #39ff14;
-    flex-shrink:0;
 }
 
 .logo{
-    width:65px;
-    height:65px;
+    width:58px;
+    height:58px;
     border-radius:50%;
+    overflow:hidden;
     background:white;
     border:2px solid #39ff14;
-    overflow:hidden;
-    display:flex;
-    justify-content:center;
-    align-items:center;
 }
 
 .logo img{
@@ -67,85 +56,94 @@ body{
 .header-text h1{
     color:#39ff14;
     font-size:18px;
-    font-weight:bold;
 }
 
 .header-text h2{
-    font-size:12px;
+    font-size:11px;
     font-weight:normal;
 }
 
-/* =========================
-   CHAT BACKGROUND
-========================= */
+/* CHAT AREA */
 .chat-container{
     flex:1;
     overflow-y:auto;
-    padding:18px;
+    padding:14px;
     display:flex;
     flex-direction:column;
     gap:14px;
 
     background:
-        radial-gradient(circle at 20% 20%, rgba(57,255,20,0.03) 0%, transparent 20%),
-        radial-gradient(circle at 80% 70%, rgba(0,100,40,0.04) 0%, transparent 25%),
-        linear-gradient(
-            rgba(248,250,248,0.98),
-            rgba(242,245,243,0.98)
-        );
+    radial-gradient(circle at 20% 20%, rgba(57,255,20,0.03), transparent 20%),
+    radial-gradient(circle at 80% 80%, rgba(0,100,40,0.04), transparent 25%),
+    linear-gradient(#f7faf7,#eef4ef);
 }
 
-/* =========================
-   WHATSAPP STYLE MESSAGES
-========================= */
+/* MESSAGES */
 .message{
-    max-width:80%;
+    max-width:82%;
     padding:12px 14px;
     border-radius:18px;
+    font-size:13px;
     line-height:1.5;
-    font-size:14px;
     word-wrap:break-word;
-    white-space:pre-line;
-    position:relative;
     box-shadow:0px 2px 6px rgba(0,0,0,0.08);
 }
 
-/* BOT */
 .bot-message{
-    background:#ffffff;
-    color:#1f1f1f;
+    background:white;
     align-self:flex-start;
-    border-bottom-left-radius:6px;
+    border-bottom-left-radius:5px;
 }
 
-/* USER */
 .user-message{
-    background:#d9fdd3;
-    color:#1f1f1f;
+    background:#dff7da;
     align-self:flex-end;
-    border-bottom-right-radius:6px;
+    border-bottom-right-radius:5px;
 }
 
-/* =========================
-   TYPING ANIMATION
-========================= */
+/* RESPONSE BOXES */
+.comparison-box{
+    margin-top:10px;
+    padding:10px;
+    background:#eef7ff;
+    border-left:4px solid #2196f3;
+    border-radius:10px;
+    font-size:12px;
+}
+
+.conclusion-box{
+    margin-top:10px;
+    padding:10px;
+    background:#edfbe9;
+    border-left:4px solid #2ecc71;
+    border-radius:10px;
+    font-size:12px;
+}
+
+.table-box{
+    margin-top:10px;
+    padding:10px;
+    background:#f8f8f8;
+    border-radius:10px;
+    font-size:12px;
+}
+
+/* TYPING */
 .typing{
     background:white;
-    width:90px;
-    padding:14px;
+    width:130px;
+    padding:12px;
     border-radius:18px;
-    border-bottom-left-radius:6px;
     display:flex;
-    gap:6px;
-    align-self:flex-start;
-    box-shadow:0px 2px 6px rgba(0,0,0,0.08);
+    gap:5px;
+    align-items:center;
 }
 
 .typing span{
-    width:10px;
-    height:10px;
-    background:#00a63e;
+    width:8px;
+    height:8px;
     border-radius:50%;
+    background:#00a63e;
     animation:bounce 1s infinite;
 }
 
@@ -162,115 +160,81 @@ body{
         transform:translateY(0);
     }
     40%{
-        transform:translateY(-8px);
+        transform:translateY(-6px);
     }
 }
 
-/* =========================
-   INPUT AREA
-========================= */
+/* INPUT */
 .input-container{
     display:flex;
     gap:10px;
-    padding:14px;
+    padding:12px;
     background:white;
-    border-top:1px solid #e5e5e5;
-    flex-shrink:0;
+    border-top:1px solid #ddd;
 }
 
 .input-container input{
     flex:1;
-    padding:14px;
+    padding:12px;
     border-radius:25px;
-    border:1px solid #dcdcdc;
+    border:1px solid #ccc;
     outline:none;
-    font-size:14px;
-    background:#f8f8f8;
 }
 
 .input-container button{
-    width:50px;
-    height:50px;
+    width:48px;
+    height:48px;
     border:none;
     border-radius:50%;
     background:linear-gradient(135deg,#00b140,#39ff14);
-    cursor:pointer;
-    font-size:20px;
     color:white;
-    box-shadow:0px 3px 8px rgba(0,0,0,0.15);
-    transition:0.3s;
+    cursor:pointer;
+    font-size:18px;
 }
 
-.input-container button:hover{
-    transform:scale(1.05);
-}
-
-.input-container button:disabled{
-    opacity:0.7;
-    cursor:not-allowed;
-}
-
-/* =========================
-   SCROLL
-========================= */
 .chat-container::-webkit-scrollbar{
-    width:5px;
+    width:4px;
 }
 
 .chat-container::-webkit-scrollbar-thumb{
     background:#39ff14;
-    border-radius:10px;
 }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <div class="header">
-
     <div class="logo">
-        <img 
-            src="https://raw.githubusercontent.com/saylusgis/chat-arcgis-ai/refs/heads/main/logo-ai.png"
-            alt="AI Logo">
+        <img src="https://raw.githubusercontent.com/saylusgis/chat-arcgis-ai/refs/heads/main/logo-ai.png">
     </div>
 
     <div class="header-text">
         <h1>AI Assistant</h1>
         <h2>SAYLUS GROUP</h2>
     </div>
-
 </div>
 
-<!-- CHAT -->
 <div class="chat-container" id="chatContainer">
-
     <div class="message bot-message">
-Hello, I'm your fuel intelligence assistant.
-
-Ask me about:
-
-• Fuel consumption  
-• Vehicle costs  
-• Fleet performance  
-• Fuel pricing  
-• Historical comparisons  
-• Date analysis
+        👋 Hello, I'm your fuel intelligence assistant.<br><br>
+        Ask me about:<br><br>
+        • Fuel consumption<br>
+        • Vehicle costs<br>
+        • Fleet performance<br>
+        • Fuel pricing<br>
+        • Historical comparisons<br>
+        • Date analysis
     </div>
-
 </div>
 
-<!-- INPUT -->
 <div class="input-container">
-
-    <input 
+    <input
         type="text"
         id="userInput"
         placeholder="Ask about your fleet..."
         onkeypress="handleEnter(event)"
     >
-
-    <button id="sendBtn" onclick="sendMessage()">➤</button>
-
+    <button onclick="sendMessage()" id="sendBtn">➤</button>
 </div>
 
 <script>
@@ -279,127 +243,146 @@ const WEBHOOK_URL =
 
 let isProcessing = false;
 
-/* USER MESSAGE */
-function addUserMessage(message){
+
+/* ADD USER MESSAGE */
+function addUserMessage(text){
     const chat = document.getElementById("chatContainer");
 
     const div = document.createElement("div");
     div.className = "message user-message";
-    div.textContent = message;
+    div.innerHTML = text;
 
     chat.appendChild(div);
-    scrollToBottom();
+    scrollBottom();
 }
 
-/* BOT MESSAGE */
-function addBotMessage(message){
+
+/* ADD BOT MESSAGE */
+function addBotMessage(html){
     const chat = document.getElementById("chatContainer");
 
     const div = document.createElement("div");
     div.className = "message bot-message";
-    div.innerHTML = formatResponse(message);
+    div.innerHTML = html;
 
     chat.appendChild(div);
-    scrollToBottom();
+    scrollBottom();
 }
 
-/* FORMAT RESPONSE */
-function formatResponse(message){
-    if(typeof message !== "string"){
-        return JSON.stringify(message,null,2);
-    }
-
-    return message.replace(/\n/g,"<br>");
-}
 
 /* TYPING */
-function showTypingIndicator(){
+function showTyping(){
     const chat = document.getElementById("chatContainer");
 
-    const typing = document.createElement("div");
-    typing.className = "typing";
-    typing.id = "typingIndicator";
+    const div = document.createElement("div");
+    div.className = "typing";
+    div.id = "typingIndicator";
 
-    typing.innerHTML = `
+    div.innerHTML = `
         <span></span>
         <span></span>
         <span></span>
+        <small>Analyzing...</small>
     `;
 
-    chat.appendChild(typing);
-    scrollToBottom();
+    chat.appendChild(div);
+    scrollBottom();
 }
 
-function removeTypingIndicator(){
+function removeTyping(){
     const typing =
         document.getElementById("typingIndicator");
 
-    if(typing){
-        typing.remove();
-    }
+    if(typing) typing.remove();
 }
 
-/* GREETING DETECTION */
-function isGreeting(message){
 
+/* GREETINGS */
+function isGreeting(text){
     const greetings = [
-        "hola",
-        "hello",
-        "hi",
-        "hey",
-        "buenas",
-        "buenos dias",
-        "good morning",
-        "good afternoon"
+        "hola","hello","hi","hey","buenas"
     ];
 
-    const lower = message.toLowerCase().trim();
-
-    return greetings.some(
-        g => lower === g || lower.includes(g)
+    return greetings.includes(
+        text.toLowerCase().trim()
     );
 }
 
-/* GREETING RESPONSE */
-function greetingResponse(message){
-
-    const lower = message.toLowerCase();
-
-    if(
-        lower.includes("hola") ||
-        lower.includes("buenas")
-    ){
+function greetingResponse(text){
+    if(text.toLowerCase().includes("hola")){
         return `
-👋 Hola, soy AI Assistant Saylus Group.
-
-Puedo ayudarte con:
-
-• Consumo de combustible  
-• Costos por vehículo  
-• Rendimiento operativo  
-• Incrementos de precio  
-• Comparaciones históricas  
-• Análisis por fechas
-
-¿En qué puedo ayudarte?
+        👋 Hola, soy AI Assistant Saylus Group.<br><br>
+        ¿En qué puedo ayudarte hoy?
         `;
     }
 
     return `
-👋 Hello, I'm AI Assistant Saylus Group.
-
-I can help you with:
-
-• Fuel consumption  
-• Vehicle costs  
-• Fleet performance  
-• Fuel pricing  
-• Historical comparisons  
-• Date analysis
-
-How can I help you today?
+    👋 Hello, I'm AI Assistant Saylus Group.<br><br>
+    How can I help you today?
     `;
 }
+
+
+/* FORMAT RESPONSE */
+function formatResponse(data){
+
+    let html = "";
+
+    if(data.response?.mainResponse){
+        html += `<div>${data.response.mainResponse}</div>`;
+    }
+
+    if(data.response?.comparison?.message){
+        html += `
+        <div class="comparison-box">
+            📊 ${data.response.comparison.message}
+        </div>`;
+    }
+
+    if(data.response?.conclusion?.message){
+        html += `
+        <div class="conclusion-box">
+            ✅ ${data.response.conclusion.message}
+        </div>`;
+    }
+
+    if(data.topVehicles?.length){
+        html += `
+        <div class="table-box">
+        <b>Top Vehicles:</b><br><br>
+        ${data.topVehicles.map(v =>
+            `• ${v.vehicle}: ${v.fuel} L`
+        ).join("<br>")}
+        </div>`;
+    }
+
+    if(data.monthlyAnalysis?.trends?.length){
+        html += `
+        <div class="table-box">
+        <b>Monthly Trend:</b><br><br>
+        ${data.monthlyAnalysis.trends.map(m =>
+            `• ${m.month}: ${m.fuel} L`
+        ).join("<br>")}
+        </div>`;
+    }
+
+    if(data.recentDailyFuelPrices?.length){
+        html += `
+        <div class="table-box">
+        <b>Recent Prices:</b><br><br>
+        ${data.recentDailyFuelPrices.map(d =>
+            `• ${d.date}: ${d.avgPrice}`
+        ).join("<br>")}
+        </div>`;
+    }
+
+    if(!html){
+        html = "No response generated.";
+    }
+
+    return html;
+}
+
 
 /* SEND MESSAGE */
 async function sendMessage(){
@@ -409,42 +392,36 @@ async function sendMessage(){
     const input =
         document.getElementById("userInput");
 
-    const sendBtn =
-        document.getElementById("sendBtn");
-
     const message =
         input.value.trim();
 
     if(!message) return;
 
     addUserMessage(message);
+
     input.value = "";
 
-    /* Greeting */
     if(isGreeting(message)){
         setTimeout(()=>{
             addBotMessage(
                 greetingResponse(message)
             );
-        },400);
+        },500);
         return;
     }
 
-    /* Real Query */
     isProcessing = true;
-    sendBtn.disabled = true;
+    document.getElementById("sendBtn").disabled = true;
 
-    showTypingIndicator();
+    showTyping();
 
     try{
-
         const response = await fetch(
             WEBHOOK_URL,
             {
                 method:"POST",
                 headers:{
-                    "Content-Type":
-                    "application/json"
+                    "Content-Type":"application/json"
                 },
                 body:JSON.stringify({
                     question:message
@@ -452,33 +429,30 @@ async function sendMessage(){
             }
         );
 
-        const data =
-            await response.json();
+        const data = await response.json();
 
-        removeTypingIndicator();
+        removeTyping();
 
         addBotMessage(
-            data.response ||
-            data.message ||
-            "No analytical response generated."
+            formatResponse(data)
         );
 
     } catch(error){
 
-        removeTypingIndicator();
+        removeTyping();
 
         addBotMessage(`
-❌ Error connecting with AI service.
-
-Please try again.
+            ❌ Error connecting to AI service.
+            Please try again.
         `);
 
         console.error(error);
     }
 
     isProcessing = false;
-    sendBtn.disabled = false;
+    document.getElementById("sendBtn").disabled = false;
 }
+
 
 /* ENTER */
 function handleEnter(event){
@@ -487,8 +461,9 @@ function handleEnter(event){
     }
 }
 
+
 /* AUTOSCROLL */
-function scrollToBottom(){
+function scrollBottom(){
     const chat =
         document.getElementById("chatContainer");
 
