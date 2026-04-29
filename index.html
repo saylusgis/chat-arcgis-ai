@@ -14,7 +14,7 @@
 }
 
 /* =========================
-   FIXED WIDTH EXPERIENCE BUILDER
+   FIXED WIDTH
 ========================= */
 html, body{
     width:350px;
@@ -69,7 +69,7 @@ body{
 }
 
 /* =========================
-   CHAT AREA
+   CHAT
 ========================= */
 .chat-container{
     flex:1;
@@ -144,7 +144,7 @@ body{
 ========================= */
 .typing{
     background:white;
-    width:150px;
+    width:160px;
     padding:12px;
     border-radius:18px;
     display:flex;
@@ -170,12 +170,8 @@ body{
 }
 
 @keyframes bounce{
-    0%,80%,100%{
-        transform:translateY(0);
-    }
-    40%{
-        transform:translateY(-6px);
-    }
+    0%,80%,100%{transform:translateY(0);}
+    40%{transform:translateY(-6px);}
 }
 
 /* =========================
@@ -207,19 +203,8 @@ body{
     color:white;
     cursor:pointer;
     font-size:18px;
-    transition:0.3s;
 }
 
-.input-container button:hover{
-    transform:scale(1.05);
-}
-
-.input-container button:disabled{
-    opacity:0.6;
-    cursor:not-allowed;
-}
-
-/* SCROLL */
 .chat-container::-webkit-scrollbar{
     width:4px;
 }
@@ -231,7 +216,6 @@ body{
 </head>
 <body>
 
-<!-- HEADER -->
 <div class="header">
     <div class="logo">
         <img src="https://raw.githubusercontent.com/saylusgis/chat-arcgis-ai/refs/heads/main/logo-ai.png">
@@ -243,7 +227,6 @@ body{
     </div>
 </div>
 
-<!-- CHAT -->
 <div class="chat-container" id="chatContainer">
     <div class="message bot-message">
         👋 Hello, I'm your fuel intelligence assistant.<br><br>
@@ -257,7 +240,6 @@ body{
     </div>
 </div>
 
-<!-- INPUT -->
 <div class="input-container">
     <input
         type="text"
@@ -274,10 +256,25 @@ const WEBHOOK_URL =
 
 let isProcessing = false;
 
+function formatNumber(value){
+    if(value === null || value === undefined || isNaN(value)) return value;
+    return Number(value).toFixed(2);
+}
 
-/* =========================
-   USER MESSAGE
-========================= */
+function detectLanguage(text){
+    const spanishWords = [
+        "hola","combustible","vehiculo",
+        "precio","costo","mes",
+        "semana","litros"
+    ];
+
+    const lower = text.toLowerCase();
+
+    return spanishWords.some(word =>
+        lower.includes(word)
+    ) ? "es" : "en";
+}
+
 function addUserMessage(text){
     const chat = document.getElementById("chatContainer");
 
@@ -289,10 +286,6 @@ function addUserMessage(text){
     scrollBottom();
 }
 
-
-/* =========================
-   BOT MESSAGE
-========================= */
 function addBotMessage(html){
     const chat = document.getElementById("chatContainer");
 
@@ -304,17 +297,8 @@ function addBotMessage(html){
     scrollBottom();
 }
 
-
-/* =========================
-   TYPING INDICATOR
-========================= */
-function showTyping(language="en"){
+function showTyping(lang){
     const chat = document.getElementById("chatContainer");
-
-    const text =
-        language === "es"
-        ? "Analizando..."
-        : "Analyzing...";
 
     const div = document.createElement("div");
     div.className = "typing";
@@ -324,7 +308,7 @@ function showTyping(language="en"){
         <span></span>
         <span></span>
         <span></span>
-        <small>${text}</small>
+        <small>${lang==="es"?"Analizando...":"Analyzing..."}</small>
     `;
 
     chat.appendChild(div);
@@ -332,108 +316,14 @@ function showTyping(language="en"){
 }
 
 function removeTyping(){
-    const typing =
-        document.getElementById("typingIndicator");
-
+    const typing = document.getElementById("typingIndicator");
     if(typing) typing.remove();
 }
 
-
-/* =========================
-   LANGUAGE DETECTION
-========================= */
-function detectLanguage(text){
-    const spanishWords = [
-        "hola","combustible","costo",
-        "vehiculo","mes","semana",
-        "precio","gasto","litros"
-    ];
-
-    const lower = text.toLowerCase();
-
-    return spanishWords.some(word =>
-        lower.includes(word)
-    ) ? "es" : "en";
-}
-
-
-/* =========================
-   GREETINGS
-========================= */
-function isGreeting(text){
-    const greetings = [
-        "hola","hello","hi",
-        "hey","buenas"
-    ];
-
-    return greetings.includes(
-        text.toLowerCase().trim()
-    );
-}
-
-function greetingResponse(text){
-
-    const lang = detectLanguage(text);
-
-    if(lang === "es"){
-        return `
-        👋 Hola, soy AI Assistant Saylus Group.<br><br>
-        Puedo ayudarte con:<br><br>
-        • Consumo de combustible<br>
-        • Costos por vehículo<br>
-        • Rendimiento operativo<br>
-        • Comparaciones históricas<br>
-        • Tendencias mensuales<br>
-        • Análisis por fechas<br><br>
-        ¿En qué puedo ayudarte?
-        `;
-    }
-
-    return `
-    👋 Hello, I'm AI Assistant Saylus Group.<br><br>
-    I can help you with:<br><br>
-    • Fuel consumption<br>
-    • Vehicle costs<br>
-    • Fleet performance<br>
-    • Historical comparisons<br>
-    • Monthly trends<br>
-    • Date analysis<br><br>
-    How can I help you today?
-    `;
-}
-
-
-/* =========================
-   FORMAT RESPONSE
-========================= */
 function formatResponse(data){
 
+    const question = (data.question || "").toLowerCase();
     const lang = data.language || "es";
-
-    const labels = {
-        comparison:
-            lang === "en" ? "Comparison" : "Comparación",
-
-        conclusion:
-            lang === "en" ? "Conclusion" : "Conclusión",
-
-        topVehicles:
-            lang === "en" ? "Top Vehicles" : "Vehículos principales",
-
-        monthlyTrend:
-            lang === "en" ? "Monthly Trend" : "Tendencia mensual",
-
-        weeklyTrend:
-            lang === "en" ? "Weekly Trend" : "Tendencia semanal",
-
-        dailyPrices:
-            lang === "en" ? "Recent Prices" : "Precios recientes",
-
-        noResponse:
-            lang === "en"
-            ? "No response generated."
-            : "No se generó respuesta."
-    };
 
     let html = "";
 
@@ -444,7 +334,7 @@ function formatResponse(data){
     if(data.response?.comparison?.message){
         html += `
         <div class="comparison-box">
-            📊 <strong>${labels.comparison}:</strong><br>
+            📊 <strong>${lang==="es"?"Comparación":"Comparison"}:</strong><br>
             ${data.response.comparison.message}
         </div>`;
     }
@@ -452,153 +342,139 @@ function formatResponse(data){
     if(data.response?.conclusion?.message){
         html += `
         <div class="conclusion-box">
-            ✅ <strong>${labels.conclusion}:</strong><br>
+            ✅ <strong>${lang==="es"?"Conclusión":"Conclusion"}:</strong><br>
             ${data.response.conclusion.message}
         </div>`;
     }
 
-    if(data.topVehicles?.length){
+    const askTop =
+        question.includes("top") ||
+        question.includes("vehiculos") ||
+        question.includes("vehicles");
+
+    const askMonthly =
+        question.includes("monthly") ||
+        question.includes("mensual") ||
+        question.includes("mes");
+
+    const askWeekly =
+        question.includes("weekly") ||
+        question.includes("semanal") ||
+        question.includes("week");
+
+    const askPrices =
+        question.includes("price") ||
+        question.includes("precio");
+
+    if(askTop && data.topVehicles?.length){
         html += `
         <div class="table-box">
-            <strong>${labels.topVehicles}</strong><br><br>
+            <strong>${lang==="es"?"Vehículos principales":"Top Vehicles"}</strong><br><br>
             ${data.topVehicles.map(v =>
-                `• ${v.vehicle}: ${v.fuel} L`
+                `• ${v.vehicle}: ${formatNumber(v.fuel)} L`
             ).join("<br>")}
         </div>`;
     }
 
-    if(data.monthlyAnalysis?.trends?.length){
+    if(askMonthly && data.monthlyAnalysis?.trends?.length){
         html += `
         <div class="table-box">
-            <strong>${labels.monthlyTrend}</strong><br><br>
+            <strong>${lang==="es"?"Tendencia mensual":"Monthly Trend"}</strong><br><br>
             ${data.monthlyAnalysis.trends.map(m =>
-                `• ${m.month}: ${m.fuel} L`
+                `• ${m.month}: ${formatNumber(m.fuel)} L`
             ).join("<br>")}
         </div>`;
     }
 
-    if(data.weeklyAnalysis?.trends?.length){
+    if(askWeekly && data.weeklyAnalysis?.trends?.length){
         html += `
         <div class="table-box">
-            <strong>${labels.weeklyTrend}</strong><br><br>
+            <strong>${lang==="es"?"Tendencia semanal":"Weekly Trend"}</strong><br><br>
             ${data.weeklyAnalysis.trends.map(w =>
-                `• Week ${w.week}: ${w.fuel} L`
+                `• Week ${w.week}: ${formatNumber(w.fuel)} L`
             ).join("<br>")}
         </div>`;
     }
 
-    if(data.recentDailyFuelPrices?.length){
+    if(askPrices && data.recentDailyFuelPrices?.length){
         html += `
         <div class="table-box">
-            <strong>${labels.dailyPrices}</strong><br><br>
+            <strong>${lang==="es"?"Precios recientes":"Recent Prices"}</strong><br><br>
             ${data.recentDailyFuelPrices.map(d =>
-                `• ${d.date}: ${d.avgPrice}`
+                `• ${d.date}: ${formatNumber(d.avgPrice)}`
             ).join("<br>")}
         </div>`;
     }
 
-    if(!html){
-        html = labels.noResponse;
-    }
-
-    return html;
+    return html || (
+        lang==="es"
+        ? "No se generó respuesta."
+        : "No response generated."
+    );
 }
 
-
-/* =========================
-   SEND MESSAGE
-========================= */
 async function sendMessage(){
 
     if(isProcessing) return;
 
-    const input =
-        document.getElementById("userInput");
+    const input = document.getElementById("userInput");
+    const sendBtn = document.getElementById("sendBtn");
 
-    const sendBtn =
-        document.getElementById("sendBtn");
-
-    const message =
-        input.value.trim();
+    const message = input.value.trim();
 
     if(!message) return;
 
-    const detectedLang =
-        detectLanguage(message);
+    const lang = detectLanguage(message);
 
     addUserMessage(message);
 
     input.value = "";
 
-    if(isGreeting(message)){
-        setTimeout(()=>{
-            addBotMessage(
-                greetingResponse(message)
-            );
-        },400);
-        return;
-    }
-
     isProcessing = true;
     sendBtn.disabled = true;
 
-    showTyping(detectedLang);
+    showTyping(lang);
 
     try{
-
-        const response = await fetch(
-            WEBHOOK_URL,
-            {
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json"
-                },
-                body:JSON.stringify({
-                    question:message,
-                    language:detectedLang
-                })
-            }
-        );
+        const response = await fetch(WEBHOOK_URL,{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                question:message,
+                language:lang
+            })
+        });
 
         const data = await response.json();
 
         removeTyping();
+        addBotMessage(formatResponse(data));
 
-        addBotMessage(
-            formatResponse(data)
-        );
-
-    } catch(error){
+    }catch(error){
 
         removeTyping();
 
         addBotMessage(
-            detectedLang === "es"
-            ? "❌ Error de conexión con el servicio IA."
-            : "❌ Error connecting to AI service."
+            lang==="es"
+            ? "Error de conexión con el servicio."
+            : "Connection error."
         );
 
         console.error(error);
     }
 
-    isProcessing = false;
-    sendBtn.disabled = false;
+    isProcessing=false;
+    sendBtn.disabled=false;
 }
 
-
-/* =========================
-   ENTER
-========================= */
 function handleEnter(event){
-    if(event.key === "Enter"){
+    if(event.key==="Enter"){
         sendMessage();
     }
 }
 
-
-/* =========================
-   AUTO SCROLL
-========================= */
 function scrollBottom(){
     const chat =
         document.getElementById("chatContainer");
