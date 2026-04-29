@@ -13,8 +13,10 @@
     font-family: Arial, sans-serif;
 }
 
-/* FIXED WIDTH FOR EXPERIENCE BUILDER */
-html,body{
+/* =========================
+   FIXED WIDTH EXPERIENCE BUILDER
+========================= */
+html, body{
     width:350px;
     height:100%;
     overflow:hidden;
@@ -27,7 +29,9 @@ body{
     border:2px solid #0c662f;
 }
 
-/* HEADER */
+/* =========================
+   HEADER
+========================= */
 .header{
     background:linear-gradient(90deg,#001b0d,#003d1f,#005d2f);
     color:white;
@@ -56,6 +60,7 @@ body{
 .header-text h1{
     color:#39ff14;
     font-size:18px;
+    font-weight:bold;
 }
 
 .header-text h2{
@@ -63,7 +68,9 @@ body{
     font-weight:normal;
 }
 
-/* CHAT AREA */
+/* =========================
+   CHAT AREA
+========================= */
 .chat-container{
     flex:1;
     overflow-y:auto;
@@ -78,7 +85,9 @@ body{
     linear-gradient(#f7faf7,#eef4ef);
 }
 
-/* MESSAGES */
+/* =========================
+   MESSAGES
+========================= */
 .message{
     max-width:82%;
     padding:12px 14px;
@@ -101,7 +110,9 @@ body{
     border-bottom-right-radius:5px;
 }
 
-/* RESPONSE BOXES */
+/* =========================
+   ANALYTICS BOXES
+========================= */
 .comparison-box{
     margin-top:10px;
     padding:10px;
@@ -128,15 +139,18 @@ body{
     font-size:12px;
 }
 
-/* TYPING */
+/* =========================
+   TYPING
+========================= */
 .typing{
     background:white;
-    width:130px;
+    width:150px;
     padding:12px;
     border-radius:18px;
     display:flex;
-    gap:5px;
     align-items:center;
+    gap:6px;
+    box-shadow:0px 2px 6px rgba(0,0,0,0.08);
 }
 
 .typing span{
@@ -164,7 +178,9 @@ body{
     }
 }
 
-/* INPUT */
+/* =========================
+   INPUT
+========================= */
 .input-container{
     display:flex;
     gap:10px;
@@ -179,6 +195,7 @@ body{
     border-radius:25px;
     border:1px solid #ccc;
     outline:none;
+    font-size:13px;
 }
 
 .input-container button{
@@ -190,8 +207,19 @@ body{
     color:white;
     cursor:pointer;
     font-size:18px;
+    transition:0.3s;
 }
 
+.input-container button:hover{
+    transform:scale(1.05);
+}
+
+.input-container button:disabled{
+    opacity:0.6;
+    cursor:not-allowed;
+}
+
+/* SCROLL */
 .chat-container::-webkit-scrollbar{
     width:4px;
 }
@@ -203,6 +231,7 @@ body{
 </head>
 <body>
 
+<!-- HEADER -->
 <div class="header">
     <div class="logo">
         <img src="https://raw.githubusercontent.com/saylusgis/chat-arcgis-ai/refs/heads/main/logo-ai.png">
@@ -214,6 +243,7 @@ body{
     </div>
 </div>
 
+<!-- CHAT -->
 <div class="chat-container" id="chatContainer">
     <div class="message bot-message">
         👋 Hello, I'm your fuel intelligence assistant.<br><br>
@@ -227,6 +257,7 @@ body{
     </div>
 </div>
 
+<!-- INPUT -->
 <div class="input-container">
     <input
         type="text"
@@ -234,7 +265,7 @@ body{
         placeholder="Ask about your fleet..."
         onkeypress="handleEnter(event)"
     >
-    <button onclick="sendMessage()" id="sendBtn">➤</button>
+    <button id="sendBtn" onclick="sendMessage()">➤</button>
 </div>
 
 <script>
@@ -244,7 +275,9 @@ const WEBHOOK_URL =
 let isProcessing = false;
 
 
-/* ADD USER MESSAGE */
+/* =========================
+   USER MESSAGE
+========================= */
 function addUserMessage(text){
     const chat = document.getElementById("chatContainer");
 
@@ -257,7 +290,9 @@ function addUserMessage(text){
 }
 
 
-/* ADD BOT MESSAGE */
+/* =========================
+   BOT MESSAGE
+========================= */
 function addBotMessage(html){
     const chat = document.getElementById("chatContainer");
 
@@ -270,9 +305,16 @@ function addBotMessage(html){
 }
 
 
-/* TYPING */
-function showTyping(){
+/* =========================
+   TYPING INDICATOR
+========================= */
+function showTyping(language="en"){
     const chat = document.getElementById("chatContainer");
+
+    const text =
+        language === "es"
+        ? "Analizando..."
+        : "Analyzing...";
 
     const div = document.createElement("div");
     div.className = "typing";
@@ -282,7 +324,7 @@ function showTyping(){
         <span></span>
         <span></span>
         <span></span>
-        <small>Analyzing...</small>
+        <small>${text}</small>
     `;
 
     chat.appendChild(div);
@@ -297,10 +339,31 @@ function removeTyping(){
 }
 
 
-/* GREETINGS */
+/* =========================
+   LANGUAGE DETECTION
+========================= */
+function detectLanguage(text){
+    const spanishWords = [
+        "hola","combustible","costo",
+        "vehiculo","mes","semana",
+        "precio","gasto","litros"
+    ];
+
+    const lower = text.toLowerCase();
+
+    return spanishWords.some(word =>
+        lower.includes(word)
+    ) ? "es" : "en";
+}
+
+
+/* =========================
+   GREETINGS
+========================= */
 function isGreeting(text){
     const greetings = [
-        "hola","hello","hi","hey","buenas"
+        "hola","hello","hi",
+        "hey","buenas"
     ];
 
     return greetings.includes(
@@ -309,22 +372,68 @@ function isGreeting(text){
 }
 
 function greetingResponse(text){
-    if(text.toLowerCase().includes("hola")){
+
+    const lang = detectLanguage(text);
+
+    if(lang === "es"){
         return `
         👋 Hola, soy AI Assistant Saylus Group.<br><br>
-        ¿En qué puedo ayudarte hoy?
+        Puedo ayudarte con:<br><br>
+        • Consumo de combustible<br>
+        • Costos por vehículo<br>
+        • Rendimiento operativo<br>
+        • Comparaciones históricas<br>
+        • Tendencias mensuales<br>
+        • Análisis por fechas<br><br>
+        ¿En qué puedo ayudarte?
         `;
     }
 
     return `
     👋 Hello, I'm AI Assistant Saylus Group.<br><br>
+    I can help you with:<br><br>
+    • Fuel consumption<br>
+    • Vehicle costs<br>
+    • Fleet performance<br>
+    • Historical comparisons<br>
+    • Monthly trends<br>
+    • Date analysis<br><br>
     How can I help you today?
     `;
 }
 
 
-/* FORMAT RESPONSE */
+/* =========================
+   FORMAT RESPONSE
+========================= */
 function formatResponse(data){
+
+    const lang = data.language || "es";
+
+    const labels = {
+        comparison:
+            lang === "en" ? "Comparison" : "Comparación",
+
+        conclusion:
+            lang === "en" ? "Conclusion" : "Conclusión",
+
+        topVehicles:
+            lang === "en" ? "Top Vehicles" : "Vehículos principales",
+
+        monthlyTrend:
+            lang === "en" ? "Monthly Trend" : "Tendencia mensual",
+
+        weeklyTrend:
+            lang === "en" ? "Weekly Trend" : "Tendencia semanal",
+
+        dailyPrices:
+            lang === "en" ? "Recent Prices" : "Precios recientes",
+
+        noResponse:
+            lang === "en"
+            ? "No response generated."
+            : "No se generó respuesta."
+    };
 
     let html = "";
 
@@ -335,56 +444,70 @@ function formatResponse(data){
     if(data.response?.comparison?.message){
         html += `
         <div class="comparison-box">
-            📊 ${data.response.comparison.message}
+            📊 <strong>${labels.comparison}:</strong><br>
+            ${data.response.comparison.message}
         </div>`;
     }
 
     if(data.response?.conclusion?.message){
         html += `
         <div class="conclusion-box">
-            ✅ ${data.response.conclusion.message}
+            ✅ <strong>${labels.conclusion}:</strong><br>
+            ${data.response.conclusion.message}
         </div>`;
     }
 
     if(data.topVehicles?.length){
         html += `
         <div class="table-box">
-        <b>Top Vehicles:</b><br><br>
-        ${data.topVehicles.map(v =>
-            `• ${v.vehicle}: ${v.fuel} L`
-        ).join("<br>")}
+            <strong>${labels.topVehicles}</strong><br><br>
+            ${data.topVehicles.map(v =>
+                `• ${v.vehicle}: ${v.fuel} L`
+            ).join("<br>")}
         </div>`;
     }
 
     if(data.monthlyAnalysis?.trends?.length){
         html += `
         <div class="table-box">
-        <b>Monthly Trend:</b><br><br>
-        ${data.monthlyAnalysis.trends.map(m =>
-            `• ${m.month}: ${m.fuel} L`
-        ).join("<br>")}
+            <strong>${labels.monthlyTrend}</strong><br><br>
+            ${data.monthlyAnalysis.trends.map(m =>
+                `• ${m.month}: ${m.fuel} L`
+            ).join("<br>")}
+        </div>`;
+    }
+
+    if(data.weeklyAnalysis?.trends?.length){
+        html += `
+        <div class="table-box">
+            <strong>${labels.weeklyTrend}</strong><br><br>
+            ${data.weeklyAnalysis.trends.map(w =>
+                `• Week ${w.week}: ${w.fuel} L`
+            ).join("<br>")}
         </div>`;
     }
 
     if(data.recentDailyFuelPrices?.length){
         html += `
         <div class="table-box">
-        <b>Recent Prices:</b><br><br>
-        ${data.recentDailyFuelPrices.map(d =>
-            `• ${d.date}: ${d.avgPrice}`
-        ).join("<br>")}
+            <strong>${labels.dailyPrices}</strong><br><br>
+            ${data.recentDailyFuelPrices.map(d =>
+                `• ${d.date}: ${d.avgPrice}`
+            ).join("<br>")}
         </div>`;
     }
 
     if(!html){
-        html = "No response generated.";
+        html = labels.noResponse;
     }
 
     return html;
 }
 
 
-/* SEND MESSAGE */
+/* =========================
+   SEND MESSAGE
+========================= */
 async function sendMessage(){
 
     if(isProcessing) return;
@@ -392,10 +515,16 @@ async function sendMessage(){
     const input =
         document.getElementById("userInput");
 
+    const sendBtn =
+        document.getElementById("sendBtn");
+
     const message =
         input.value.trim();
 
     if(!message) return;
+
+    const detectedLang =
+        detectLanguage(message);
 
     addUserMessage(message);
 
@@ -406,16 +535,17 @@ async function sendMessage(){
             addBotMessage(
                 greetingResponse(message)
             );
-        },500);
+        },400);
         return;
     }
 
     isProcessing = true;
-    document.getElementById("sendBtn").disabled = true;
+    sendBtn.disabled = true;
 
-    showTyping();
+    showTyping(detectedLang);
 
     try{
+
         const response = await fetch(
             WEBHOOK_URL,
             {
@@ -424,7 +554,8 @@ async function sendMessage(){
                     "Content-Type":"application/json"
                 },
                 body:JSON.stringify({
-                    question:message
+                    question:message,
+                    language:detectedLang
                 })
             }
         );
@@ -441,20 +572,23 @@ async function sendMessage(){
 
         removeTyping();
 
-        addBotMessage(`
-            ❌ Error connecting to AI service.
-            Please try again.
-        `);
+        addBotMessage(
+            detectedLang === "es"
+            ? "❌ Error de conexión con el servicio IA."
+            : "❌ Error connecting to AI service."
+        );
 
         console.error(error);
     }
 
     isProcessing = false;
-    document.getElementById("sendBtn").disabled = false;
+    sendBtn.disabled = false;
 }
 
 
-/* ENTER */
+/* =========================
+   ENTER
+========================= */
 function handleEnter(event){
     if(event.key === "Enter"){
         sendMessage();
@@ -462,7 +596,9 @@ function handleEnter(event){
 }
 
 
-/* AUTOSCROLL */
+/* =========================
+   AUTO SCROLL
+========================= */
 function scrollBottom(){
     const chat =
         document.getElementById("chatContainer");
