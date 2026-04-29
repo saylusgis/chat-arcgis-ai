@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=350, initial-scale=1.0">
 <title>AI Saylus Assistant</title>
 
 <style>
@@ -10,27 +10,27 @@
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family: Arial, sans-serif;
+    font-family:Arial,sans-serif;
 }
 
-html, body{
+html,body{
     width:350px;
     height:100vh;
     overflow:hidden;
     background:transparent;
 }
 
-/* PANEL PRINCIPAL */
+/* PANEL */
 .chat-panel{
     width:350px;
     height:100vh;
     display:flex;
     flex-direction:column;
-    background:rgba(255,255,255,0.97);
+    background:rgba(255,255,255,0.98);
     border-left:3px solid #39ff14;
-    box-shadow:-8px 0px 25px rgba(0,0,0,0.35);
     border-radius:18px 0px 0px 18px;
     overflow:hidden;
+    box-shadow:-8px 0px 25px rgba(0,0,0,0.35);
 }
 
 /* HEADER */
@@ -45,25 +45,22 @@ html, body{
     display:flex;
     align-items:center;
     padding:15px;
-    position:relative;
     border-bottom:2px solid #39ff14;
+    position:relative;
 }
 
 .chat-header::before{
     content:"";
     position:absolute;
-    top:0;
-    right:0;
-    width:100%;
-    height:100%;
+    inset:0;
     background:
-        radial-gradient(circle at top right,
-        rgba(57,255,20,0.25),
-        transparent 35%);
-    pointer-events:none;
+        radial-gradient(
+            circle at top right,
+            rgba(57,255,20,0.18),
+            transparent 40%
+        );
 }
 
-/* LOGO */
 .bot-logo{
     width:70px;
     height:70px;
@@ -72,9 +69,6 @@ html, body{
     overflow:hidden;
     border:2px solid #39ff14;
     background:white;
-    display:flex;
-    justify-content:center;
-    align-items:center;
     z-index:2;
 }
 
@@ -84,7 +78,6 @@ html, body{
     object-fit:cover;
 }
 
-/* TEXTO HEADER */
 .header-text{
     margin-left:12px;
     z-index:2;
@@ -98,11 +91,11 @@ html, body{
 
 .header-text p{
     color:white;
-    font-size:13px;
+    font-size:12px;
     letter-spacing:1px;
 }
 
-/* BODY */
+/* CHAT BODY */
 .chat-body{
     flex:1;
     overflow-y:auto;
@@ -115,18 +108,20 @@ html, body{
     position:relative;
 }
 
-/* textura suave */
 .chat-body::before{
     content:"";
     position:absolute;
     inset:0;
     background-image:
-        radial-gradient(rgba(0,150,0,0.03) 1px, transparent 1px);
+        radial-gradient(
+            rgba(0,150,0,0.03) 1px,
+            transparent 1px
+        );
     background-size:24px 24px;
     pointer-events:none;
 }
 
-/* mensajes */
+/* MESSAGES */
 .message{
     position:relative;
     z-index:2;
@@ -135,7 +130,8 @@ html, body{
     border-radius:14px;
     max-width:90%;
     font-size:14px;
-    line-height:1.4;
+    line-height:1.5;
+    white-space:pre-line;
 }
 
 .user{
@@ -148,6 +144,38 @@ html, body{
     background:#edf7ed;
     color:#0b2e13;
     border:1px solid rgba(0,100,0,0.08);
+}
+
+/* LOADER */
+.loading-container{
+    display:none;
+    text-align:center;
+    padding:15px;
+    z-index:2;
+    position:relative;
+}
+
+.loader-spinner{
+    width:35px;
+    height:35px;
+    margin:auto;
+    border:4px solid rgba(0,0,0,0.1);
+    border-top:4px solid #39ff14;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+}
+
+.loading-text{
+    margin-top:10px;
+    font-size:13px;
+    color:#14532d;
+    font-weight:bold;
+}
+
+@keyframes spin{
+    100%{
+        transform:rotate(360deg);
+    }
 }
 
 /* INPUT */
@@ -187,7 +215,12 @@ html, body{
     background:#25cc0f;
 }
 
-/* scrollbar */
+.chat-input button:disabled{
+    background:#a5a5a5;
+    cursor:not-allowed;
+}
+
+/* SCROLL */
 .chat-body::-webkit-scrollbar{
     width:6px;
 }
@@ -204,7 +237,6 @@ html, body{
 
     <!-- HEADER -->
     <div class="chat-header">
-        
         <div class="bot-logo">
             <img src="logo-ai.png" alt="AI Logo">
         </div>
@@ -213,87 +245,264 @@ html, body{
             <h2>AI Assistant</h2>
             <p>SAYLUS GROUP</p>
         </div>
-
     </div>
 
-    <!-- CHAT BODY -->
+    <!-- CHAT -->
     <div class="chat-body" id="chatBox">
 
         <div class="message bot">
-            Hello, I'm your fuel intelligence assistant. Ask me about:
-            <br><br>
-            • Fuel consumption  
-            • Vehicle costs  
-            • Fleet performance  
-            • Reports & invoices  
+Hello, I'm your fuel intelligence assistant.
+
+Ask me about:
+
+• Fuel consumption  
+• Vehicle costs  
+• Fleet performance  
+• Fuel pricing  
+• Operational analytics
+        </div>
+
+        <!-- LOADER -->
+        <div class="loading-container" id="loadingContainer">
+            <div class="loader-spinner"></div>
+            <div class="loading-text" id="loadingText">
+                Processing...
+            </div>
         </div>
 
     </div>
 
     <!-- INPUT -->
     <div class="chat-input">
-        <input 
+        <input
             type="text"
             id="messageInput"
             placeholder="Ask about your fleet..."
         >
-        
-        <button onclick="sendMessage()">➤</button>
+
+        <button id="sendBtn" onclick="sendMessage()">➤</button>
     </div>
 
 </div>
 
 <script>
+const webhookURL =
+"https://saylusglobal.app.n8n.cloud/webhook/arcgis-fuelmanagement";
+
+const loadingMessages = [
+    "Analyzing fuel records...",
+    "Calculating fleet metrics...",
+    "Comparing vehicles...",
+    "Generating AI response..."
+];
+
+let loadingInterval = null;
+let loadingIndex = 0;
+
+
+// Detect language
+function detectLanguage(text){
+    const spanishWords = [
+        "cuál","cual","combustible",
+        "vehiculo","vehículo",
+        "litros","costo"
+    ];
+
+    const lower = text.toLowerCase();
+
+    return spanishWords.some(word => lower.includes(word))
+        ? "es"
+        : "en";
+}
+
+
+// Add message
+function addMessage(text,type){
+    const chatBox =
+        document.getElementById("chatBox");
+
+    const div =
+        document.createElement("div");
+
+    div.className = `message ${type}`;
+    div.innerText = text;
+
+    chatBox.appendChild(div);
+
+    chatBox.scrollTop =
+        chatBox.scrollHeight;
+}
+
+
+// Show loader
+function showLoader(language){
+
+    const loader =
+        document.getElementById(
+            "loadingContainer"
+        );
+
+    const loadingText =
+        document.getElementById(
+            "loadingText"
+        );
+
+    const messages =
+        language === "es"
+        ? [
+            "Analizando registros...",
+            "Calculando métricas...",
+            "Comparando vehículos...",
+            "Generando respuesta..."
+          ]
+        : loadingMessages;
+
+    loader.style.display = "block";
+
+    loadingIndex = 0;
+    loadingText.innerText =
+        messages[0];
+
+    loadingInterval =
+        setInterval(() => {
+            loadingIndex =
+                (loadingIndex + 1) %
+                messages.length;
+
+            loadingText.innerText =
+                messages[loadingIndex];
+        },1500);
+}
+
+
+// Hide loader
+function hideLoader(){
+    const loader =
+        document.getElementById(
+            "loadingContainer"
+        );
+
+    loader.style.display="none";
+
+    clearInterval(
+        loadingInterval
+    );
+}
+
+
+// Format structured response
+function formatResponse(data){
+
+    let text = "";
+
+    if(data.response?.mainResponse){
+        text += data.response.mainResponse + "\n\n";
+    }
+
+    if(data.response?.comparison?.message){
+        text +=
+        "📊 " +
+        data.response.comparison.message +
+        "\n\n";
+    }
+
+    if(data.response?.justification?.message){
+        text +=
+        "📌 " +
+        data.response.justification.message;
+    }
+
+    return text || "No response available.";
+}
+
+
+// Send message
 async function sendMessage(){
 
-    const input = document.getElementById("messageInput");
-    const message = input.value.trim();
+    const input =
+        document.getElementById(
+            "messageInput"
+        );
+
+    const button =
+        document.getElementById(
+            "sendBtn"
+        );
+
+    const message =
+        input.value.trim();
 
     if(!message) return;
 
-    const chatBox = document.getElementById("chatBox");
+    const language =
+        detectLanguage(message);
 
-    // mensaje usuario
-    chatBox.innerHTML += `
-        <div class="message user">${message}</div>
-    `;
+    addMessage(message,"user");
 
-    input.value = "";
-    chatBox.scrollTop = chatBox.scrollHeight;
+    input.value="";
+
+    button.disabled = true;
+
+    showLoader(language);
 
     try{
-        const response = await fetch(
-            "https://saylusglobal.app.n8n.cloud/webhook/arcgis-fuelmanagement",
-            {
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json"
-                },
-                body: JSON.stringify({
-                    pregunta: message
-                })
-            }
+
+        const response =
+            await fetch(
+                webhookURL,
+                {
+                    method:"POST",
+                    headers:{
+                        "Content-Type":
+                        "application/json"
+                    },
+                    body: JSON.stringify({
+                        question: message,
+                        language: language
+                    })
+                }
+            );
+
+        const data =
+            await response.json();
+
+        hideLoader();
+
+        const formattedText =
+            formatResponse(data);
+
+        addMessage(
+            formattedText,
+            "bot"
         );
-
-        const data = await response.json();
-
-        chatBox.innerHTML += `
-            <div class="message bot">
-                ${data.respuesta}
-            </div>
-        `;
-
-        chatBox.scrollTop = chatBox.scrollHeight;
 
     } catch(error){
 
-        chatBox.innerHTML += `
-            <div class="message bot">
-                Connection error with AI service.
-            </div>
-        `;
+        hideLoader();
+
+        addMessage(
+            language === "es"
+            ? "Error de conexión con el servicio AI."
+            : "Connection error with AI service.",
+            "bot"
+        );
     }
+
+    button.disabled = false;
 }
+
+
+// Enter key
+document
+.getElementById("messageInput")
+.addEventListener(
+    "keypress",
+    function(e){
+        if(e.key === "Enter"){
+            sendMessage();
+        }
+    }
+);
 </script>
 
 </body>
